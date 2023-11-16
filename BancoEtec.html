@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco da Etec</title>
+</head>
+
+<body>
+    <h1>Banco da Etec</h1>
+
+    <div id="antesTransferencia"></div>
+    <hr>
+    <div id="depoisTransferencia"></div>
+
+    <script>
+        let pessoas = [];
+
+        while (true) {
+            let inicio = Number(prompt("Olá, bem-vindo ao banco da Etec \n Escolha uma das opções abaixo para prosseguir \n[1].Cadastrar conta\n[2].Realizar PIX\n[3].Sair"));
+
+            if (inicio === 1) {
+                cadastrar();
+            } else if (inicio === 2) {
+                transferirPix();    
+            } else if (inicio === 3) {
+                break;
+            } else {
+                alert("Opção inválida. Por favor, escolha uma opção válida.");
+            }
+        }
+
+        function cadastrar() {
+            let pessoa = {
+                cpf: prompt("Digite o CPF (número da conta):"),
+                nome: prompt("Digite o nome:"),
+                saldo: Number(prompt("Digite o saldo inicial:"))
+            };
+            pessoas.push(pessoa);
+            exibirInformacoes("antesTransferencia");
+        }
+
+        function transferirPix() {
+            let origem = prompt("Digite o CPF da conta de origem:");
+            let destino = prompt("Digite o CPF da conta de destino:");
+
+
+            let contaOrigem = encontrarConta(origem);
+            let contaDestino = encontrarConta(destino);
+
+            if (!contaOrigem) {
+                mostrarMensagem("A conta de origem não é cadastrada.");
+            } else if (!contaDestino) {
+                mostrarMensagem("A conta de destino não é cadastrada.");
+            } else {
+
+
+                let valor = Number(prompt("Digite o valor a ser transferido:"));
+
+                if (contaOrigem.saldo >= valor) {
+                    contaOrigem.saldo -= valor;
+                    contaDestino.saldo += valor;
+                    mostrarMensagem("Transferência realizada com sucesso!");
+                } else {
+                    mostrarMensagem("Saldo insuficiente para realizar a transferência.");
+                }
+            }
+
+            exibirInformacoes("depoisTransferencia");
+        }
+
+        function encontrarConta(cpf) {
+            return pessoas.find(conta => conta.cpf === cpf); /* verifica se o cpf passado como argumento é igual ao cpf da conta atual.*/
+        }
+
+        function mostrarMensagem(mensagem) {
+            alert(mensagem);
+        }
+
+        function exibirInformacoes(elementId) {
+            let resultadoHTML = '';
+
+            for (let i = 0; i < pessoas.length; i++) {
+                resultadoHTML += '<p><b>Nome</b> ' + pessoas[i].nome + '<br><b>CPF</b>  ' + pessoas[i].cpf + '<br>Saldo: ' + pessoas[i].saldo + '</p>';
+            }
+
+            document.getElementById(elementId).innerHTML = resultadoHTML;
+        }
+    </script>
+</body>
+
+</html>
